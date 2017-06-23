@@ -20,7 +20,7 @@ public class BKMeans {
 	
 // public static void saveData(ArrayList<BSequence> data, int maxSize, String filename) {
 //		String s = "\"UXT_START_TIME\",\"IPV4_ADDR\",\"USERNAME\",\"URL_PATH\",\"CATEGORY\",\"NAME\",\"NAME2\",\"UXT_METHOD\",\"UXT_STATUS\",\"UXT_DURATION\",\"'<N/A>'\n";
-//		s += maxSize + "\n";
+//	    s += maxSize + "\n";
 //		int d = 0;
 //		System.out.println(data.size());
 //		for(BSequence bs: data) {
