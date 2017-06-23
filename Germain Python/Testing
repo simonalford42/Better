@@ -1,0 +1,8 @@
+import numpy as np
+import csv
+
+f = open('First_Small.csv', 'r')
+reader = csv.reader(f)
+rows = [row for row in reader]
+times = [row[0] for row in rows]
+print(times)
