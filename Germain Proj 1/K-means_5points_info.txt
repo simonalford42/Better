@@ -1,0 +1,55 @@
+Unique ID size = 5
+ Cluster  size = 41 avg dist = 0.7653745644599298
+mean = [/ecommunications_sve/start.swe, HTTP:Click, Click on input, Id, <N/A>, <N/A>, 0.0]
+3: /ecommunications_sve/start.swe 100, 
+4: HTTP:Click 100, 
+5: Click on input 100, 
+6: Invoice_Number 63, Id 17, Item_Price 14, 
+7: <N/A> 100, 
+8: <N/A> 100, 
+9: 0 100,
+end info
+Unique ID size = 562
+ Cluster  size = 673 avg dist = 1.2274139908439252
+mean = [/ecommunications_sve/start.swe, HTTP:Request, GetViewLayout, <none>, GET, 200, 0.4184546805349185]
+3: /ecommunications_sve/start.swe 78, /ecommunications_sve/23044/scripts/swecommon.js 4, /ecommunications_sve/23044/scripts/siebel/custom/t2_messages_sve.json 3, 
+4: HTTP:Request 100, 
+5: GetViewLayout 37, GetCachedFrame 32, Async 21, 
+6: <none> 61, Asset Mgmt - Assets View 7, All Account List View 4, 
+7: GET 100, 
+8: 200 100, 
+9: 0.013 1, 0.016 1, 0.015 1,
+end info
+Unique ID size = 940
+ Cluster  size = 1624 avg dist = 0.6779926652371916
+mean = [/ecommunications_sve/start.swe, HTTP:Request, InvokeMethod, <none>, POST, 200, 0.36496366995073853]
+3: /ecommunications_sve/start.swe 99, /rest/events/ 0, 
+4: HTTP:Request 100, 
+5: InvokeMethod 88, GotoView 9, GotoBookmarkView 2, 
+6: <none> 45, Asset Mgmt - Assets View 6, Asset+Mgmt+-+Assets+View 6, 
+7: POST 99, GET 0, 
+8: 200 100, 
+9: 0.02 2, 0.024 2, 0.019 1,
+end info
+Unique ID size = 705
+ Cluster  size = 8951 avg dist = 0.9838464244538733
+mean = [/ecommunications_sve/start.swe, HTTP:Click, Click on input, Type, <N/A>, <N/A>, 0.0]
+3: /ecommunications_sve/start.swe 99, /ecommunications_enu/start.swe 0, 
+4: HTTP:Click 100, 
+5: Click on input 100, 
+6: T2_Primary_Attribute_Value 9, s_8_1_96_0 7, T2_Primary_Attribute_Value_SVE 5, 
+7: <N/A> 100, 
+8: <N/A> 100, 
+9: 0 100,
+end info
+Unique ID size = 6351
+ Cluster  size = 16278 avg dist = 1.217386249077039
+mean = [/ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-8, <N/A>, <N/A>, 0.0]
+3: /ecommunications_sve/start.swe 61, <javascript> 38, <default> 0, 
+4: HTTP:Click 100, 
+5: Click on link 87, Click on button 12, 
+6: <none> 13, T2 Account Name SVE 5, SR Number 5, 
+7: <N/A> 100, 
+8: <N/A> 100, 
+9: 0 100,
+end info

@@ -870,7 +870,7 @@ public class FreshK {
 	
 	public static void main(String[] args) {
 		makeNewData(true);
-		int[] vals = {62, 25, 10, 5, 3};
+		int[] vals = {68, 28, 10, 5};
 		for(int i: vals) {
 			kSubMeansStuff(i, true);
 		}
