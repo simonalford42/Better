@@ -1,0 +1,56 @@
+08-JUN-17 09.26.02.971000000 AM, 10.42.8.9, venkgane, /ecommunications_sve/start.swe, HTTP:Click, Click on input, HTML_Text, <N/A>, <N/A>, 0.0, Betalningsinfo+333
+08-JUN-17 12.15.53.122000000 AM, 10.42.253.230, mon_csr, /ecommunications_sve/start.swe, HTTP:Request, InvokeMethod, <none>, POST, 200, 1.7105714285714289, <N/A>
+08-JUN-17 02.25.59.157000000 PM, 10.42.8.9, venkshan, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-80, <N/A>, <N/A>, 0.0, Tj�nster
+08-JUN-17 01.10.27.834000000 AM, 10.42.8.9, mon_csr, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-73, <N/A>, <N/A>, 0.0, Tj�nster
+08-JUN-17 10.13.03.369000000 AM, 10.42.8.9, yvonengma, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-64, <N/A>, <N/A>, 0.0, Aktiviteter
+08-JUN-17 12.20.30.591000000 PM, 10.42.253.230, johanils, /ecommunications_sve/start.swe, HTTP:Click, Click on input, s_5_1_7_0, <N/A>, <N/A>, 0.0, 
+08-JUN-17 12.28.16.344000000 AM, 10.42.8.9, surygovi, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-59, <N/A>, <N/A>, 0.0, Tj�nster
+08-JUN-17 12.40.09.312000000 AM, 10.42.8.9, mohamoha, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-8, <N/A>, <N/A>, 0.0, �renden
+08-JUN-17 04.52.48.235000000 PM, 10.42.8.9, danireim, /ecommunications_sve/start.swe, HTTP:Click, Click on input, s_0_1_6_0, <N/A>, <N/A>, 0.0, 
+08-JUN-17 12.31.27.992000000 AM, 10.156.153.21, karitimo, /ecommunications_sve/start.swe, HTTP:Request, InvokeMethod, Contact Detail View, POST, 200, 2.184925, <N/A>
+08-JUN-17 05.01.48.594000000 PM, 10.42.8.9, eltoshtav, /ecommunications_sve/start.swe, HTTP:Click, Click on input, s_5_1_540_0, <N/A>, <N/A>, 0.0, 
+08-JUN-17 03.53.05.469000000 PM, 10.42.8.9, ankiberge, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-387, <N/A>, <N/A>, 0.0, Tj�nster
+08-JUN-17 01.07.19.157000000 PM, 10.42.8.9, mathmari, /ecommunications_sve/start.swe, HTTP:Click, Click on button, GRPITEM[~^`grpItemId2`^~[LINK, <N/A>, <N/A>, 0.0, Slutf�r
+08-JUN-17 12.32.26.414000000 AM, 10.42.253.230, mon_csr, /ecommunications_sve/start.swe, HTTP:Request, GotoView, Asset Mgmt - Assets View, POST, 200, 0.7941604938271601, <N/A>
+08-JUN-17 05.21.29.126000000 PM, 10.42.8.9, mohanara, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-230, <N/A>, <N/A>, 0.0, Tj�nster
+08-JUN-17 06.39.27.081000000 AM, 10.42.8.9, mohanara, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-356, <N/A>, <N/A>, 0.0, �renden
+08-JUN-17 12.43.34.431000000 AM, 10.42.8.9, anneblom1, /ecommunications_sve/start.swe, HTTP:Click, Click on input, s_3_1_73_0, <N/A>, <N/A>, 0.0, 
+08-JUN-17 11.11.20.912000000 AM, 10.42.8.9, venkshan, /ecommunications_sve/start.swe, HTTP:Click, Click on input, Name, <N/A>, <N/A>, 0.0, Allm�nt
+08-JUN-17 08.01.03.233000000 AM, 10.42.8.9, mimmaugus, /ecommunications_sve/start.swe, HTTP:Click, Click on input, s_1_1_0_0, <N/A>, <N/A>, 0.0, 
+08-JUN-17 03.34.26.330000000 PM, 10.42.8.9, niklhoglu, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-216, <N/A>, <N/A>, 0.0, Tj�nster
+08-JUN-17 04.25.28.940000000 PM, 10.42.8.9, ankiberge, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-12, <N/A>, <N/A>, 0.0, Tj�nster
+08-JUN-17 10.11.15.634000000 AM, 10.42.8.9, gowtsrid, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-79, <N/A>, <N/A>, 0.0, Tj�nster
+08-JUN-17 09.59.08.426000000 AM, 10.42.8.9, annasven, /ecommunications_sve/start.swe, HTTP:Click, Click on input, Field 5, <N/A>, <N/A>, 0.0, 
+08-JUN-17 02.37.38.858000000 PM, 10.42.8.9, ankiberge, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-401, <N/A>, <N/A>, 0.0, Tj�nster
+08-JUN-17 11.21.36.728000000 AM, 10.42.8.9, markolss, /ecommunications_sve/start.swe, HTTP:Click, Click on input, s_2_1_193_0, <N/A>, <N/A>, 0.0, 
+08-JUN-17 12.33.25.791000000 AM, 10.42.253.230, mon_csr, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-63, <N/A>, <N/A>, 0.0, Tj�nster
+08-JUN-17 10.19.26.520000000 AM, 10.42.8.9, dhinvair, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-58, <N/A>, <N/A>, 0.0, Tj�nster
+08-JUN-17 08.11.23.863000000 AM, 10.42.8.9, niklhoglu, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-189, <N/A>, <N/A>, 0.0, Tj�nster
+08-JUN-17 07.47.56.636000000 AM, 10.42.8.9, robibohl, /ecommunications_sve/start.swe, HTTP:Click, Click on input, Product, <N/A>, <N/A>, 0.0, 1
+08-JUN-17 07.44.28.463000000 AM, 10.42.8.9, <default>, /ecommunications_sve/start.swe, HTTP:Click, Click on input, Id, <N/A>, <N/A>, 0.0, 
+08-JUN-17 10.38.07.178000000 AM, 10.42.8.9, mon_csr, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-10, <N/A>, <N/A>, 0.0, Konton
+08-JUN-17 07.55.21.879000000 PM, 10.42.8.9, linalazo, /ecommunications_sve/start.swe, HTTP:Click, Click on input, s_0_1_8_0, <N/A>, <N/A>, 0.0, 
+08-JUN-17 08.26.01.881000000 AM, 10.42.253.230, <default>, <javascript>, HTTP:Click, Click on link, s_swepi_22, <N/A>, <N/A>, 0.0, Inloggning
+08-JUN-17 08.39.54.347000000 AM, 10.42.8.9, krisradh, /ecommunications_sve/start.swe, HTTP:Click, Click on input, s_1_1_367_0, <N/A>, <N/A>, 0.0, 
+08-JUN-17 02.54.02.949000000 PM, 10.42.8.9, mohanara, <javascript>, HTTP:Click, Click on link, Last Name, <N/A>, <N/A>, 0.0, Summering
+08-JUN-17 01.01.35.385000000 PM, 10.42.8.9, pierwall, /ecommunications_sve/start.swe, HTTP:Click, Click on input, s_8_1_225_0, <N/A>, <N/A>, 0.0, 
+08-JUN-17 04.45.34.010000000 AM, 10.42.253.230, mon_csr, /ecommunications_sve/start.swe, HTTP:Click, Click on input, T2_Person_Number, <N/A>, <N/A>, 0.0, 
+08-JUN-17 12.35.41.368000000 AM, 10.42.253.230, mon_csr, /ecommunications_sve/start.swe, HTTP:Request, InvokeMethod, All Account List View, POST, 200, 0.17508429752066132, <N/A>
+08-JUN-17 12.18.51.470000000 PM, 10.42.253.230, mon_csr, /ecommunications_sve/start.swe, HTTP:Click, Click on input, Account, <N/A>, <N/A>, 0.0, 
+08-JUN-17 11.03.31.205000000 PM, 10.42.8.9, anneblom1, <javascript>, HTTP:Click, Click on link, Name, <N/A>, <N/A>, 0.0, ���Sort
+08-JUN-17 12.22.47.645000000 AM, 10.42.253.230, mon_csr, /ecommunications_sve/start.swe, HTTP:Request, GetViewLayout, <none>, GET, 200, 0.4172134328358212, <N/A>
+08-JUN-17 12.05.35.220000000 PM, 10.42.8.9, mohanara, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-146, <N/A>, <N/A>, 0.0, Tj�nster
+08-JUN-17 05.04.56.505000000 PM, 10.42.8.9, ankiberge, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-320, <N/A>, <N/A>, 0.0, Tj�nster
+08-JUN-17 03.17.04.686000000 PM, 10.42.8.9, mohamoha, /ecommunications_sve/start.swe, HTTP:Click, Click on button, <none>, <N/A>, <N/A>, 0.0, OK
+08-JUN-17 12.00.31.973000000 AM, 10.42.253.230, mon_csr, /ecommunications_sve/start.swe, HTTP:Request, InvokeMethod, <none>, POST, 200, 0.07039466292134841, <N/A>
+08-JUN-17 12.33.11.325000000 PM, 10.42.8.9, ankiberge, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-719, <N/A>, <N/A>, 0.0, Tj�nster
+08-JUN-17 07.16.57.518000000 AM, 10.42.8.9, niklhoglu, <javascript>, HTTP:Click, Click on link, Account, <N/A>, <N/A>, 0.0, 10109097727
+08-JUN-17 04.43.59.642000000 PM, 10.42.8.9, niklhoglu, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-11, <N/A>, <N/A>, 0.0, Tj�nster
+08-JUN-17 07.27.25.095000000 PM, 10.42.8.9, consnite, /ecommunications_sve/start.swe, HTTP:Click, Click on input, s_0_1_4_0, <N/A>, <N/A>, 0.0, 
+08-JUN-17 04.31.55.806000000 PM, 10.42.8.9, krisradh, /ecommunications_sve/start.swe, HTTP:Click, Click on input, s_1_1_10_0, <N/A>, <N/A>, 0.0, 
+08-JUN-17 03.21.16.116000000 PM, 10.42.8.9, nevichor, /ecommunications_sve/start.swe, HTTP:Click, Click on input, s_8_1_96_0, <N/A>, <N/A>, 0.0, 
+08-JUN-17 10.38.57.858000000 AM, 10.42.8.9, rekhprab, /ecommunications_sve/start.swe, HTTP:Click, Click on button, s_0_1_17_0, <N/A>, <N/A>, 0.0, OK
+08-JUN-17 11.26.33.330000000 AM, 10.42.8.9, henrlande, /ecommunications_sve/start.swe, HTTP:Click, Click on input, T2_Primary_Attribute_Value, <N/A>, <N/A>, 0.0, 
+08-JUN-17 10.55.26.807000000 AM, 10.42.8.9, mohanara, <javascript>, HTTP:Click, Click on link, <none>, <N/A>, <N/A>, 0.0, Aktivitet:E-post - Inkommande
+08-JUN-17 08.16.39.624000000 AM, 10.42.8.9, karitimo, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-232, <N/A>, <N/A>, 0.0, Tj�nster
+08-JUN-17 04.45.54.712000000 PM, 10.42.8.9, nedunper, <javascript>, HTTP:Click, Click on link, T2 SR #, <N/A>, <N/A>, 0.0, Webbplatskarta

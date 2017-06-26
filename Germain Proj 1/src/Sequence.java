@@ -17,14 +17,6 @@ public class Sequence implements Comparable<Sequence>{
 		idCounter++;
 	}
 	
-	public Sequence(String user) {
-		this.user = user;
-		this.data = new ArrayList<Subpoint>();
-		this.length = 0;
-		this.id = idCounter;
-		idCounter++;
-	}
-	
 	/**
 	 * Returns a view of the portion of this list between the specified fromIndex, inclusive, and toIndex, exclusive.
 	 * (If fromIndex and toIndex are equal, the returned list is empty.) 

@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,8 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -18,8 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
+
+import com.opencsv.CSVReader;
 
 /**
  * Class so that it works on any data thing instead of having
@@ -40,7 +37,7 @@ public class FreshK {
 	public static ArrayList<ArrayList<Sequence>> finalClusters;
 	public static Sequence[] finalMeans;
 	public static int equalsLength;
-	public static ArrayList<Subpoint> subpoints;
+	public static List<Subpoint> subpoints;
 	public static ArrayList<ArrayList<Subpoint>> finalSubClusters;
 	public static Subpoint[] finalSubMeans;
 	public static Map<Tuple<String, String>, Double> stringDistLookup = new HashMap<>();
@@ -102,23 +99,13 @@ public class FreshK {
 		data = new ArrayList<>();
 		Map<String, ArrayList<Subpoint>> sacs = new HashMap<>();
 		subpoints = new ArrayList<>();
-			
 		
-		BufferedReader br;
 		try {
-			br = new BufferedReader(new FileReader(new File(dataFilePath)));
-			String line = br.readLine();
-			attributeLabels = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-			
-			while ((line = br.readLine()) != null) {
-				if (line.charAt(line.length() - 1) != '\"') {
-					String line2 = br.readLine();
-					line += line2;
-				}
-				
-				Subpoint sp = new Subpoint(line);
-				subpoints.add(sp);
-				
+			CSVReader reader = new CSVReader(new FileReader(dataFilePath));
+			subpoints = reader.readAll().stream().map(e -> new Subpoint(e)).collect(Collectors.toList());
+			attributeLabels = subpoints.remove(0).data;
+			System.out.println("halfwayish");
+			for(Subpoint sp: subpoints) {
 				String user = sp.data[sequenceIDIndex];
 				if (!sacs.containsKey(user)) {
 					sacs.put(user, new ArrayList<Subpoint>());
@@ -136,12 +123,12 @@ public class FreshK {
 					} catch (NumberFormatException e) {
 						//this is okay, it just means we got an N/A and don't count it
 					} catch (ArrayIndexOutOfBoundsException e) {
-						System.out.println(line);
+						System.out.println(Arrays.toString(sp.data));
 						e.printStackTrace();
 					}
 				}
 			}
-			br.close();
+			reader.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -156,7 +143,7 @@ public class FreshK {
 		}
 
 		long time2 = System.currentTimeMillis();
-		long secs = (time2 - time) / 1000;
+		double secs = (double)(time2 - time) / 1000.0;
 		System.out.println("Loading done (" + secs + " seconds)");
 	}
 	
@@ -799,16 +786,14 @@ public class FreshK {
 			return;
 		
 		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter("K-means_" + k + "points.txt"));
+			BufferedWriter dataWriter = new BufferedWriter(new FileWriter("K-means_" + k + "points_data.txt"));
+			BufferedWriter infoWriter = new BufferedWriter(new FileWriter("K-means_" + k + "points_info.txt"));
 			for(int j = 0; j < k; j++) {
 				int i = indeces[j];
 				
-				String line = "";
-				for(Subpoint s: finalSubClusters.get(i)) {
-					line += s.id + ",";
-				}
-				line = line.substring(0, line.length() - 1) + "\n";
-				writer.write(line);
+				String str = Arrays.toString(finalSubMeans[i].data);
+				str = str.substring(1, str.length() - 1);
+				dataWriter.write(str + "\n");
 				
 				double avgDist = 0;
 				for(Subpoint s: finalSubClusters.get(i)) {
@@ -817,15 +802,15 @@ public class FreshK {
 				avgDist /= finalSubClusters.get(i).size();
 				
 				Map<Subpoint, Integer> freqMap = freqMap(finalSubClusters.get(i));
-				writer.write("Unique ID size = " + freqMap.size() + "\n");
-				writer.write(" Cluster  size = " + finalSubClusters.get(i).size()
+				infoWriter.write("Unique ID size = " + freqMap.size() + "\n");
+				infoWriter.write(" Cluster  size = " + finalSubClusters.get(i).size()
 						+ " avg dist = " + avgDist + "\n");
-				writer.write("mean = " + finalSubMeans[i].toString() + "\n");
-				writer.write(getStats(finalSubClusters.get(i)) + "\n");
-				writer.write("end info\n");
+				infoWriter.write("mean = " + finalSubMeans[i].toString() + "\n");
+				infoWriter.write(getStats(finalSubClusters.get(i)) + "\n");
+				infoWriter.write("end info\n");
 			}
-			writer.write("done");
-			writer.close();
+			infoWriter.close();
+			dataWriter.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -884,6 +869,10 @@ public class FreshK {
 	}
 	
 	public static void main(String[] args) {
-		makeNewData(false);
+		makeNewData(true);
+		int[] vals = {62, 25, 10, 5, 3};
+		for(int i: vals) {
+			kSubMeansStuff(i, true);
+		}
 	}
 }

@@ -1,37 +1,27 @@
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class Subpoint implements Comparable<Subpoint> {
-	public static int idCounter = 0;
+	public static int idCounter = -1; //starts at -1 because one gets used up on the attribute labels
 	public int id;
 	public int equalsId;
 	public String label;
 	public String[] data;
 	public String[] equalsData;
 	
-	public Subpoint(String datalist) {
-		this(datalist.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)"));
-	}
-	
-	//also removes the strings around the outside. it'll give an error otherwise
-	public Subpoint(String[] data) {
+	public Subpoint(String[] attrList) {
 		this.id = idCounter;
 		idCounter++;
-		
+		this.data = attrList;
 		equalsData = new String[FreshK.equalsLength];
 		int i2 = 0;
 		for(int i = 0; i < data.length; i++) {
-			if (data[i].length() > 0 && data[i].charAt(0) == '"')
-				data[i] = data[i].substring(1,  data[i].length() - 1);
-			
 			if (FreshK.weights[i] != 0) {
 				equalsData[i2] = data[i];
 				i2++;
 			}
 		}
-		
-		this.data = data;
 	}
-	
 	
 	public double distance(Subpoint other) {
 		//System.out.println();
@@ -54,17 +44,15 @@ public class Subpoint implements Comparable<Subpoint> {
 				break;
 			case 1:
 				boolean b1 = this.data[i].equals("<none>") || this.data[i].equals("<N/A>");
-				boolean b2 = this.data[i].equals("<none>") || other.data[i].equals("<N/A>");
+				boolean b2 = other.data[i].equals("<none>") || other.data[i].equals("<N/A>");
 				
 				//if both subpoints have numerical values here
 				if (!b1 && !b2) {
 					double d1 = Double.valueOf(this.data[i]);
 					double d2 = Double.valueOf(other.data[i]);
 					attrDist = FreshK.weights[i]*(1.0/FreshK.rangeNumVals[i])*Math.abs(d1 - d2);
-				} else if (b1 && b2) {
-					attrDist = 0;
 				} else {
-					attrDist = FreshK.weights[i];
+					attrDist = 0;
 				}
 				break;
 			case 2:
@@ -115,4 +103,5 @@ public class Subpoint implements Comparable<Subpoint> {
 			return false;
 		return true;
 	}
+	
 }

@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 public class Levenshtein {
 	
-	public static double softLevi(SimpleSeq root, SimpleSeq query, double shiftPenalty) {
+	public static double softLevi(Seq root, Seq query, double shiftPenalty) {
 		double arr[][] = new double[root.length+2][query.length+2];
 		
 		for(int i = 2; i < root.length + 2; i++) {
@@ -92,7 +92,7 @@ public class Levenshtein {
   		return arr[root.length + 1][query.length + 1];
 	}
 	
-	public static int hardLevinshtein(SimpleSeq root, SimpleSeq query, int shiftPenalty) {
+	public static int hardLevinshtein(Seq root, Seq query, int shiftPenalty) {
 		int arr[][] = new int[root.length+2][query.length+2];
 		
 		for(int i = 2; i < root.length + 2; i++) {
