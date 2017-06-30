@@ -1,13 +1,13 @@
-Unique ID size = 12
- Cluster  size = 280 avg dist = 0.6309024507238797
-mean = [/ecommunications_sve/start.swe, HTTP:Click, Click on input, Name, <N/A>, <N/A>, 0.0]
+Unique ID size = 152
+ Cluster  size = 154 avg dist = 0.9449907496696603
+mean = [/ecommunications_sve/start.swe, HTTP:Request, InvokeMethod, Contact Detail View, POST, 200, 2.297155844155844]
 3: /ecommunications_sve/start.swe 100, 
-4: HTTP:Click 100, 
-5: Click on input 100, 
-6: Template_Name 28, Name 24, Category 21, 
-7: <N/A> 100, 
-8: <N/A> 100, 
-9: 0 100,
+4: HTTP:Request 100, 
+5: InvokeMethod 77, GotoView 11, GetViewLayout 11, 
+6: Contact Detail View 42, Complex Product Runtime Instance View (JS) - Order (Sales) 21, Order Entry - Line Items Detail View (Sales) 11, 
+7: POST 86, GET 13, 
+8: 200 100, 
+9: 1.707 1, 0.138 1, 0.205 1,
 end info
 Unique ID size = 276
  Cluster  size = 493 avg dist = 0.22925561029009267
@@ -20,27 +20,38 @@ mean = [/ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-8, <N/A
 8: <N/A> 100, 
 9: 0 100,
 end info
-Unique ID size = 673
- Cluster  size = 915 avg dist = 0.271135121708896
-mean = [/ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-58, <N/A>, <N/A>, 0.0]
-3: /ecommunications_sve/start.swe 99, mika.andersson@hotmail.se 0, 
+Unique ID size = 632
+ Cluster  size = 786 avg dist = 0.28047105919243576
+mean = [/ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-11, <N/A>, <N/A>, 0.0]
+3: /ecommunications_sve/start.swe 100, 
 4: HTTP:Click 100, 
 5: Click on link 100, 
-6: ui-id-59 1, ui-id-78 1, ui-id-58 1, 
+6: ui-id-61 0, ui-id-1156 0, ui-id-91 0, 
 7: <N/A> 100, 
 8: <N/A> 100, 
 9: 0 100,
 end info
-Unique ID size = 241
- Cluster  size = 1051 avg dist = 0.9908471523718907
-mean = [/ecommunications_sve/start.swe, HTTP:Click, Click on input, Id, <N/A>, <N/A>, 0.0]
+Unique ID size = 794
+ Cluster  size = 986 avg dist = 1.4220769054382407
+mean = [/ecommunications_sve/start.swe, HTTP:Request, InvokeMethod, All Account List View, POST, 200, 0.19065212981744442]
 3: /ecommunications_sve/start.swe 100, 
-4: HTTP:Click 100, 
-5: Click on input 100, 
-6: Person_Number 28, Field 5 21, SWEUserName 7, 
-7: <N/A> 100, 
-8: <N/A> 100, 
-9: 0 100,
+4: HTTP:Request 100, 
+5: InvokeMethod 58, GetViewLayout 24, GotoView 13, 
+6: Asset Mgmt - Assets View 15, T2 Activity Email Body View 11, Asset+Mgmt+-+Assets+View 10, 
+7: POST 75, GET 24, 
+8: 200 100, 
+9: 0.036 1, 0.093 1, 0.058 1,
+end info
+Unique ID size = 556
+ Cluster  size = 1157 avg dist = 0.8639883041526543
+mean = [/ecommunications_sve/start.swe, HTTP:Request, InvokeMethod, <none>, POST, 200, 0.28744684528954184]
+3: /ecommunications_sve/start.swe 87, /ecommunications_sve/23044/scripts/swecommon.js 2, /ecommunications_sve/23044/scripts/siebel/custom/t2_messages_sve.json 2, 
+4: HTTP:Request 100, 
+5: InvokeMethod 63, GetCachedFrame 19, Async 12, 
+6: <none> 99, Order+Entry+-+My+Orders+View+(Sales) 0, T2 Asset - Recurring Charges View 0, 
+7: POST 64, GET 35, 
+8: 200 100, 
+9: 0.02 4, 0.019 3, 0.018 2,
 end info
 Unique ID size = 229
  Cluster  size = 2066 avg dist = 0.6606969990319458
@@ -53,43 +64,21 @@ mean = [/ecommunications_sve/start.swe, HTTP:Click, Click on button, <none>, <N/
 8: <N/A> 100, 
 9: 0 100,
 end info
-Unique ID size = 83
- Cluster  size = 2202 avg dist = 0.39326012858890314
-mean = [/ecommunications_sve/start.swe, HTTP:Click, Click on input, T2_Primary_Attribute_Value, <N/A>, <N/A>, 0.0]
-3: /ecommunications_sve/start.swe 100, 
-4: HTTP:Click 100, 
-5: Click on input 100, 
-6: T2_Primary_Attribute_Value 37, T2_Primary_Attribute_Value_SVE 20, T2_Person_Number_SVE 18, 
-7: <N/A> 100, 
-8: <N/A> 100, 
-9: 0 100,
-end info
-Unique ID size = 1502
- Cluster  size = 2297 avg dist = 1.242123502378517
-mean = [/ecommunications_sve/start.swe, HTTP:Request, InvokeMethod, <none>, POST, 200, 0.3806360470178499]
-3: /ecommunications_sve/start.swe 93, /ecommunications_sve/23044/scripts/swecommon.js 1, /ecommunications_sve/23044/scripts/siebel/custom/t2_messages_sve.json 1, 
-4: HTTP:Request 100, 
-5: InvokeMethod 62, GetViewLayout 11, GetCachedFrame 9, 
-6: <none> 49, Asset Mgmt - Assets View 6, T2 Activity Email Body View 4, 
-7: POST 70, GET 29, 
-8: 200 100, 
-9: 0.02 2, 0.019 1, 0.018 1,
-end info
-Unique ID size = 374
- Cluster  size = 5459 avg dist = 0.43507367775876826
-mean = [/ecommunications_sve/start.swe, HTTP:Click, Click on input, s_0_1_9_0, <N/A>, <N/A>, 0.0]
+Unique ID size = 82
+ Cluster  size = 2262 avg dist = 0.9338679687387255
+mean = [/ecommunications_sve/start.swe, HTTP:Click, Click on input, Type, <N/A>, <N/A>, 0.0]
 3: /ecommunications_sve/start.swe 99, /ecommunications_enu/start.swe 0, 
 4: HTTP:Click 100, 
 5: Click on input 100, 
-6: s_8_1_96_0 12, s_0_1_8_0 7, s_1_1_367_0 5, 
+6: T2_Primary_Attribute_Value 36, T2_Primary_Attribute_Value_SVE 19, T2_Person_Number_SVE 17, 
 7: <N/A> 100, 
 8: <N/A> 100, 
 9: 0 100,
 end info
-Unique ID size = 233
- Cluster  size = 6292 avg dist = 0.9749783045237627
+Unique ID size = 234
+ Cluster  size = 6293 avg dist = 0.9751411873611179
 mean = [<javascript>, HTTP:Click, Click on link, Name, <N/A>, <N/A>, 0.0]
-3: <javascript> 99, <default> 0, 
+3: <javascript> 99, <default> 0, mika.andersson@hotmail.se 0, 
 4: HTTP:Click 100, 
 5: Click on link 100, 
 6: <none> 20, T2 Account Name SVE 13, SR Number 13, 
@@ -97,13 +86,24 @@ mean = [<javascript>, HTTP:Click, Click on link, Name, <N/A>, <N/A>, 0.0]
 8: <N/A> 100, 
 9: 0 100,
 end info
-Unique ID size = 4940
- Cluster  size = 6512 avg dist = 0.375538477527125
+Unique ID size = 4980
+ Cluster  size = 6640 avg dist = 0.37602641627116123
 mean = [/ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-10, <N/A>, <N/A>, 0.0]
 3: /ecommunications_sve/start.swe 99, /ecommunications_enu/start.swe 0, 
 4: HTTP:Click 100, 
 5: Click on link 100, 
 6: <none> 3, ui-id-63 1, ui-id-102 0, 
+7: <N/A> 100, 
+8: <N/A> 100, 
+9: 0 100,
+end info
+Unique ID size = 628
+ Cluster  size = 6730 avg dist = 0.9993135746126091
+mean = [/ecommunications_sve/start.swe, HTTP:Click, Click on input, Id, <N/A>, <N/A>, 0.0]
+3: /ecommunications_sve/start.swe 99, /ecommunications_enu/start.swe 0, 
+4: HTTP:Click 100, 
+5: Click on input 100, 
+6: s_8_1_96_0 10, s_0_1_8_0 6, Person_Number 4, 
 7: <N/A> 100, 
 8: <N/A> 100, 
 9: 0 100,

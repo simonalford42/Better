@@ -1,24 +1,22 @@
+import java.util.Arrays;
 
 public class PointType {
-	public static String labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz";
 	public final int id;
 	public static int idCounter = 0;
 	public final String label;
 	public final String[] data; //has all the data for ease of use
+	public final String info;
 	
-	public PointType(String[] data) {
+	public PointType(String[] data, String info) {
 		this.data = data;
 		this.id = idCounter;
 		idCounter++;
-		this.label = labels.substring(id, id+1);
+		this.label = info.substring(0, 1);
+		this.info = info;
 	}
 	
 	public String toString() {
-		return label;
-	}
-	
-	public static String getLabel(int i) {
-		return labels.substring(i, i+1);
+		return Arrays.toString(data);
 	}
 
 	@Override

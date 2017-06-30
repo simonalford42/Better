@@ -1,15 +1,13 @@
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -25,21 +23,25 @@ import com.opencsv.CSVReader;
  *
  */
 public class FreshK {
-	public static String[] attributeLabels;
-	public static int[] compareTypes;
-	public static double[] weights;
 	public static ArrayList<Sequence> data;
-	public static double[] rangeNumVals;
-	public static int timeStampIndex;
-	public static DateParser dateParser;
-	public static int numAttrs;
-	public static double maxDist;
-	public static ArrayList<ArrayList<Sequence>> finalClusters;
-	public static Sequence[] finalMeans;
-	public static int equalsLength;
 	public static List<Subpoint> subpoints;
+
+	public static int[] attrTypes;
+	public static double[] weights;
+	public static double[] rangeNumVals;
+	public static double maxDist;
+	public static int numAttrs;
+	public static DateParser dateParser;
+	public static int timeStampIndex;
+	public static int userIndex;
+	public static int equalsLength;
+	
+	public static Sequence[] finalMeans;
+	public static ArrayList<ArrayList<Sequence>> finalClusters;
 	public static ArrayList<ArrayList<Subpoint>> finalSubClusters;
 	public static Subpoint[] finalSubMeans;
+	public static String labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz!@#$%^&*()-=_+{}[]|:;<,>.?/~`";
+
 	public static Map<Tuple<String, String>, Double> stringDistLookup = new HashMap<>();
 	
 	public static DistanceMetric<Sequence> defaultDist = new DistanceMetric<Sequence>() {
@@ -60,39 +62,42 @@ public class FreshK {
 		}
 	};
 	
-	public FreshK(String dataFilePath, double[] weights, int[] compareTypes, int sequenceIDIndex,
-			int timeStampIndex, DateParser dp) {
+	public static void importData(String dataFilePath, double[] weights, int[] attrTypes, DateParser dp) {
 		System.out.println("Loading");
 		long time = System.currentTimeMillis();
 		
-		FreshK.timeStampIndex = timeStampIndex;
-		FreshK.numAttrs = compareTypes.length;
+		numAttrs = attrTypes.length;
 		dateParser = dp;
 		
 		FreshK.weights = weights;
-		maxDist = 0;
-		equalsLength = 0;
-		for (double w: weights) {
-			if (w != 0)
-				equalsLength++;
-			maxDist += w;
-		}
+		maxDist = Arrays.stream(weights).sum();
+		FreshK.attrTypes = attrTypes;
+
+		rangeNumVals = new double[numAttrs];
+		double[] largestNumVals = new double[numAttrs];
+		double[] smallestNumVals = new double[numAttrs];
 		
-		FreshK.compareTypes = compareTypes;
-		rangeNumVals = new double[compareTypes.length];
-		double[] largestNumVals = new double[compareTypes.length];
-		double[] smallestNumVals = new double[compareTypes.length];
 		
-		for(int i = 0; i < compareTypes.length; i++) {
+		for(int i = 0; i < numAttrs; i++) {
 			largestNumVals[i] = Double.MIN_VALUE;
 			smallestNumVals[i] = Double.MAX_VALUE;
 		}
 		
+		userIndex = -1;
+		equalsLength = 0;
 		ArrayList<Integer> numIndeces = new ArrayList<>();
-		for(int i = 0; i < compareTypes.length; i++) {
-			int type = compareTypes[i];
+		for(int i = 0; i < numAttrs; i++) {
+			if (weights[i] != 0) {
+				equalsLength++;
+			}
+			
+			int type = attrTypes[i];
 			if (type == 1) {
 				numIndeces.add(i);
+			} else if (type == 3) {
+				timeStampIndex = i;
+			} else if (type == 4) {
+				userIndex = i;
 			}
 		}
 		
@@ -102,11 +107,11 @@ public class FreshK {
 		
 		try {
 			CSVReader reader = new CSVReader(new FileReader(dataFilePath));
-			subpoints = reader.readAll().stream().map(e -> new Subpoint(e)).collect(Collectors.toList());
-			attributeLabels = subpoints.remove(0).data;
+			subpoints = reader.readAll().stream().skip(1).map(e -> new Subpoint(e)).collect(Collectors.toList());
 			System.out.println("halfwayish");
+			
 			for(Subpoint sp: subpoints) {
-				String user = sp.data[sequenceIDIndex];
+				String user = sp.data[userIndex];
 				if (!sacs.containsKey(user)) {
 					sacs.put(user, new ArrayList<Subpoint>());
 				}
@@ -216,26 +221,29 @@ public class FreshK {
 	}
 	
 	public static Subpoint[] kSubMeans(int k) {
+		List<Subpoint> uniqueSubpoints = new ArrayList<>(Helper.freqMap(subpoints).keySet());
+		
 		Subpoint[] means = new Subpoint[k];
-		int maxIters = 15;
+		int maxIters = 100;
 		//initialize to random subpoints
 		Random rand = new Random();
 		ArrayList<Integer> used = new ArrayList<Integer>();
 		int n = 0;
 		for (int i = 0; i < k; i++) {
 			do {
-				n = rand.nextInt(subpoints.size());
+				n = rand.nextInt(uniqueSubpoints.size());
 			} while (used.contains(n));
 		
-			means[i] = subpoints.get(n);
+			means[i] = uniqueSubpoints.get(n);
 			used.add(n);
 		}
 		
 		ArrayList<ArrayList<Subpoint>> clusters = null;
 		ArrayList<ArrayList<Subpoint>> oldClusters;
-		int iter = 0;
+		int iter = 1;
+		
 		do {
-			iter++;
+			System.out.println("iter " + iter + " / " + maxIters);
 			oldClusters = clusters;
 			
 			clusters = new ArrayList<ArrayList<Subpoint>>(k);
@@ -244,7 +252,7 @@ public class FreshK {
 			}
 			
 			// associate each subpoint with its nearest mean
-			for (Subpoint s: subpoints) {
+			for (Subpoint s: uniqueSubpoints) {
 				double minDistance = Integer.MAX_VALUE;
 				int nearest = 0;
 				for (int i = 0; i < k; i++) {
@@ -278,7 +286,7 @@ public class FreshK {
 				String[] attrList = new String[FreshK.numAttrs];
 				//for each attribute
 				for(int attr = 0; attr < numAttrs; attr++) {
-					switch(compareTypes[attr]) {
+					switch(attrTypes[attr]) {
 					case 0:
 						//categorical, so find the most common value and that is the value for the new mean
 	
@@ -348,6 +356,12 @@ public class FreshK {
 						
 						attrList[attr] = min;
 						break;
+					case 3:
+						attrList[attr] = "Chinese dentist time";
+						break;
+					case 4:
+						attrList[attr] = "My fair lady";
+						break;
 					default: 
 						throw new java.lang.RuntimeException("this not right");
 					}
@@ -358,8 +372,9 @@ public class FreshK {
 			}
 			
 			means = newMeans;
-			
+			iter++;
 			System.out.println("Round over\n");
+			System.out.println(iter <= maxIters);
 		} while (iter <= maxIters && !clusters.equals(oldClusters));
 			
 		finalSubMeans = means;
@@ -471,7 +486,7 @@ public class FreshK {
 			String[] attrList = new String[FreshK.numAttrs];
 			//for each attribute
 			for(int attr = 0; attr < numAttrs; attr++) {
-				switch(compareTypes[attr]) {
+				switch(attrTypes[attr]) {
 				case 0:
 					//categorical, so find the most common value and that is the value for the new mean
 
@@ -542,29 +557,6 @@ public class FreshK {
 		return avg;
 	}
 	
-	public static void pause() {
-		System.out.println("(Paused)");
-		new Scanner(System.in).nextLine();
-	}
-	
-	public static void print(Sequence seq) {
-		System.out.println("id " + seq.id + " length " + seq.length);
-		//for(Subpoint sub: seq.data) {
-			//System.out.println(sub.toString());
-		//}
-	}
-	
-	public static <T> Map<T, Integer> freqMap(Collection<T> items) {
-		Map<T, Integer> freqMap = new LinkedHashMap<T, Integer>();
-		
-		for(T t: items) {
-			Integer val = freqMap.get(t);
-			freqMap.put(t, (val == null ? 1 : val + 1));
-		}
-		
-		return freqMap;
-	}
-	
 	public static void testReflexivity() {
 		for(Sequence s: data) {
 			if (s.distance(s) != 0) {
@@ -625,76 +617,6 @@ public class FreshK {
 
 	}
 	
-//	public static FreshK makeSimonData() {
-//		double[] weights = {0, 		0, 		  1,  1,	 1, 	1, 		 0, 		0, 		1, 		1};
-//		//				tStamp, src_addr,   url, cat, subcat, subcat2, method, status, duration, dom-content
-//		// 0 is for categorical data, 1 is for numerical
-//		int[] compareTypes = {0, 	0,			0,	0, 	0, 		0, 		0, 			0, 		1, 		0};
-//		DateParser dp = new DateParser() {
-//			public Date makeDate(String dateString) {
-//				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//				Date d = null;
-//				try {
-//					d = format.parse(dateString);
-//				} catch (ParseException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				
-//				return d;
-//			}
-//		};
-//		
-//		int timeStampIndex = 0;
-//		int idIndex = 2;
-//		return new FreshK("Simon-Data.csv", weights, compareTypes, idIndex, timeStampIndex, dp);
-//	}
-	
-	public static FreshK makeNewData(boolean isSmallVersion) {
-		double[] weights = {0, 		0, 		  0,  			1,  		1,	 	1, 		1, 		 1, 		1, 			1, 				0};
-		//		UXT_START_TIME	IPV4_ADDR	USERNAME	URL_PATH	CATEGORY	NAME	NAME2	UXT_METHOD	UXT_STATUS	UXT_DURATION	<N/A>'
-		// 0 is for categorical data, 1 is for numerical, 2 is for string matching
-		int[] compareTypes = {0,0,0,		0,0,0, 	2,0,0, 	1, 0};	
-		int timeStampIndex = 0;
-		int idIndex = 2;
-		DateParser dp = new DateParser() {
-			public Date makeDate(String s) {
-				String apm = s.substring(s.length() - 3);
-				s = s.substring(0, s.length() - 9);
-				s = s + apm;
-				SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yy hh.mm.ss.SSS a");
-				Date d = null;
-				
-				try {
-					d = format.parse(s);
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				return d;
-			}
-		};
-		
-		String filePath = "/Users/alfordsimon/Desktop/Germain data/First_Big.csv";
-		if (isSmallVersion) {
-			filePath = "First_Small.csv";
-		}
-		return new FreshK(filePath, weights, compareTypes, idIndex, timeStampIndex, dp);
-		
-	}
-	
-	public static double stdev(ArrayList<Double> vals, double mean) {
-		double n = vals.size();
-		double std = 0;
-		for(double val: vals) {
-			std += (mean - val)*(mean - val);
-		}
-		std /= n;
-		std = Math.sqrt(std);
-		return std;
-	}
-	
 	public static ArrayList<Sequence> partition(Sequence s) {
 		ArrayList<Sequence> bestPartitions = new ArrayList<Sequence>();
 		bestPartitions.add(s);
@@ -733,7 +655,7 @@ public class FreshK {
 		return bestPartitions;
 	}
 	
-	public static void kSubMeansStuff(int k, boolean save) {
+	public static void kSubMeansStuff(int k, String filePath) {
 		kSubMeans(k);
 		k = finalSubClusters.size();
 		System.out.println(k);
@@ -766,34 +688,17 @@ public class FreshK {
 		indeces = array[0];
 		sizes = array[1];
 		
-		for(int j = 0; j < k; j++) {
-			int i = indeces[j];
-			double avgDist = 0;
-			for(Subpoint s: finalSubClusters.get(i)) {
-				avgDist += finalSubMeans[i].distance(s);
-			}
-			avgDist /= finalSubClusters.get(i).size();
-			
-			Map<Subpoint, Integer> freqMap = freqMap(finalSubClusters.get(i));
-			System.out.println("Unique ID size = " + freqMap.size());
-			System.out.println(" Cluster  size = " + finalSubClusters.get(i).size()
-					+ " avg dist = " + avgDist);
-			System.out.println("mean = " + finalSubMeans[i].toString());
-			System.out.println(getStats(finalSubClusters.get(i)));
-		}
-		
-		if (!save)
-			return;
-		
 		try {
-			BufferedWriter dataWriter = new BufferedWriter(new FileWriter("K-means_" + k + "points_data.txt"));
-			BufferedWriter infoWriter = new BufferedWriter(new FileWriter("K-means_" + k + "points_info.txt"));
+			BufferedWriter dataWriter = new BufferedWriter(new FileWriter(filePath + "K-means_" + k + "points_data.txt"));
+			BufferedWriter infoWriter = new BufferedWriter(new FileWriter(filePath + "K-means_" + k + "points_info.txt"));
 			for(int j = 0; j < k; j++) {
 				int i = indeces[j];
-				
-				String str = Arrays.toString(finalSubMeans[i].data);
-				str = str.substring(1, str.length() - 1);
-				dataWriter.write(str + "\n");
+				String arrString = "";
+				for(String s: finalSubMeans[i].data) {
+					arrString += s + ",";
+				}
+				arrString = arrString.substring(0, arrString.length() - 1);
+				dataWriter.write(arrString + "\n");
 				
 				double avgDist = 0;
 				for(Subpoint s: finalSubClusters.get(i)) {
@@ -801,7 +706,8 @@ public class FreshK {
 				}
 				avgDist /= finalSubClusters.get(i).size();
 				
-				Map<Subpoint, Integer> freqMap = freqMap(finalSubClusters.get(i));
+				Map<Subpoint, Integer> freqMap = Helper.freqMap(finalSubClusters.get(i));
+				infoWriter.write(labels.charAt(i) + "\n");
 				infoWriter.write("Unique ID size = " + freqMap.size() + "\n");
 				infoWriter.write(" Cluster  size = " + finalSubClusters.get(i).size()
 						+ " avg dist = " + avgDist + "\n");
@@ -811,8 +717,10 @@ public class FreshK {
 			}
 			infoWriter.close();
 			dataWriter.close();
+			System.out.println("Saved file " + "K-means_" + k + "points_data.txt");
+			System.out.println("Saved file " + "K-means_" + k + "points_info.txt");
+
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -831,48 +739,144 @@ public class FreshK {
 				items.add(s.data[i]);
 			}
 			
-			Map<String, Integer> freqMap = sortByValue(freqMap(items));
-			for(int j = 0; j < Math.min(3, freqMap.size()); j++) {
+			Map<String, Integer> freqMap = Helper.sortByValue(Helper.freqMap(items));
+			for(int j = 0; j < Math.min(10, freqMap.size()); j++) {
 				String key = freqMap.keySet().toArray(new String[freqMap.size()])[freqMap.size() - 1 - j];
-				stuff += key + " " + (100*freqMap.get(key) / cluster.size()) + ", ";
+				DecimalFormat df = new DecimalFormat("#.##");
+				stuff += key + " " + df.format((double)100*freqMap.get(key) / (double)cluster.size()) + ", ";
 			}
 			stuff += "\n";
 			stats.add(freqMap);
 			
 		}
 		return stuff.substring(0, stuff.length() - 2);
+	}
+	
+	public static void makeFirstData(String fileName) {
+		Dataset first = Dataset.FIRST;
+		double[] weights = first.weights;
+		int[] attrTypes = first.attrTypes;
+		DateParser dp = first.dp;
+		
+		String filePath = "/Users/alfordsimon/Desktop/Germain Data/First/" + fileName;
+		importData(filePath, weights, attrTypes, dp);
+	}
+	
+	public static void makeJune28Data(String fileName) {
+		Dataset june28 = Dataset.JUNE28;
+		double[] weights = june28.weights;
+		int[] attrTypes = june28.attrTypes;
+		DateParser dp = june28.dp;
+		
+		String filePath = "/Users/alfordsimon/Desktop/Germain Data/June 28/" + fileName;
+		importData(filePath, weights, attrTypes, dp);
+	}
+	
+	public static int findMean(Subpoint s) {
+		int i = -1;
+		double minDist = Double.MAX_VALUE;
+		for(int j = 0; j < finalSubMeans.length; j++) {
+			Subpoint mean = finalSubMeans[j];
+			double dist = s.distance(mean);
+			if (dist < minDist) {
+				minDist = dist;
+				i = j;
+			}
+		}
+		return i;
+	}
 
-	}
-	
-	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
-	    return map.entrySet()
-	              .stream()
-	              .sorted(Map.Entry.comparingByValue(/*Collections.reverseOrder()*/))
-	              .collect(Collectors.toMap(
-	                Map.Entry::getKey, 
-	                Map.Entry::getValue, 
-	                (e1, e2) -> e1, 
-	                LinkedHashMap::new
-	              ));
-	}
-	
-	public static <K, V extends Comparable<? super V>> Map<K, V> sortByKey(Map<K, V> map) {
-	    return map.entrySet()
-	              .stream()
-	              .sorted(Map.Entry.comparingByValue(/*Collections.reverseOrder()*/))
-	              .collect(Collectors.toMap(
-	                Map.Entry::getKey, 
-	                Map.Entry::getValue, 
-	                (e1, e2) -> e2, 
-	                LinkedHashMap::new
-	              ));
+	public static void combineJune28() {
+		List<Triple<String, String, Long>> list = new ArrayList<>();
+		List<String> lines = new ArrayList<>();
+		//import it all
+		Dataset june = Dataset.JUNE28;
+		FreshK.attrTypes = june.attrTypes;
+		FreshK.dateParser = june.dp;
+		FreshK.weights = june.weights;
+		FreshK.equalsLength = weights.length;
+		
+		try {
+			for (int i = 19; i < 20; i++) {
+				for (int j = 1; j < 3; j++) {
+					System.out.println("hello");
+					String fileName = "simon-201706" + i + "." + j + ".csv";
+					String fullName = "/Users/alfordsimon/Desktop/Germain data/June 28/" + fileName;
+					CSVReader reader = new CSVReader(new FileReader(fullName));
+					list.addAll(reader.readAll().stream().skip(1).map(e -> new Subpoint(e)).map(e -> new Triple<String, String, Long>("",e.data[2], FreshK.dateParser.makeDate(e.data[0]).getTime())).collect(Collectors.toList()));
+					BufferedReader br = new BufferedReader(new FileReader(fullName));
+					String line;
+					while((line = br.readLine()) != null) {
+						lines.add(line);
+					}
+					br.close();
+					reader.close();
+					System.out.println("good");
+				}
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		System.out.println(lines.size());
+		System.out.println(list.size());
+		Helper.pause();
+		for(int i = 0; i < lines.size(); i++) {
+			list.get(i).x = lines.get(i);
+		}
+		
+		list.stream().sorted(new Comparator<Triple<String, String, Long>>() {
+			public int compare(Triple<String,String,Long> t1, Triple<String,String,Long> t2) {
+				return t1.y.compareTo(t2.y);
+			}
+		});
+		
+		List<String> list2 = new ArrayList<>();
+		
+		int i = 0;
+		while (i < list.size()) {
+			int end = i+1;
+			String user = list.get(i).y;
+			while (end < list.size() && list.get(end).y == user) {
+				end++;
+			}
+			List<Triple<String,String,Long>> sublist = list.subList(i, end);
+			List<String> sortedStrings = sublist.stream().sorted(new Comparator<Triple<String,String,Long>>() {
+				public int compare(Triple<String, String, Long> t1, Triple<String, String, Long> t2) {
+					return t1.z.compareTo(t2.z);
+				}
+			}).map(e -> e.x).collect(Collectors.toList());
+			list2.addAll(sortedStrings);
+			i = end;
+		}
+		
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter("Users/alfordsimon/Desktop/Germain data/June28/2gether.csv"));
+			for(String line: list2) {
+				bw.write(line + "\n");
+			}
+			bw.close();
+		} catch (IOException e) {
+			System.out.println("File writing failed");
+			e.printStackTrace();
+		}
 	}
 	
 	public static void main(String[] args) {
-		makeNewData(true);
-		int[] vals = {68, 28, 10, 5};
-		for(int i: vals) {
-			kSubMeansStuff(i, true);
+		makeJune28Data("simon-20170620.1.csv");
+		kSubMeansStuff(75, "/Users/alfordsimon/Desktop/Germain data/June ");
+		Map<Character, List<Subpoint>> map = new HashMap<>();
+		for(Subpoint s: subpoints) {
+			if (s.data[6].equals("ONRINGING") || s.data[6].equals("ONHANGUP") || s.data[6].equals("ONAFTERWORKDONE") || s.data[6].equals("ONANSWER")) {
+				int i = findMean(s);
+				Character label = labels.charAt(i);
+				if (!map.containsKey(label)) {
+					map.put(label, new ArrayList<>());
+				}
+				map.get(label).add(s);
+			}
 		}
+		System.out.println(map.keySet().toString());
+		System.out.println(map.values().stream().map(e -> Integer.toString(e.size())).collect(Collectors.joining(",")));
 	}
 }

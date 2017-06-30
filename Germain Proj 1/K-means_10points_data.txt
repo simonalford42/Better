@@ -1,10 +1,10 @@
-08-JUN-17 11.11.20.912000000 AM, 10.42.8.9, yuvakuma, /ecommunications_sve/start.swe, HTTP:Click, Click on input, Name, <N/A>, <N/A>, 0.0, 
-08-JUN-17 10.19.26.520000000 AM, 10.42.8.9, mon_csr, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-8, <N/A>, <N/A>, 0.0, Tj�nster
-08-JUN-17 12.33.11.325000000 PM, 10.42.8.9, ankiberge, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-58, <N/A>, <N/A>, 0.0, Tj�nster
-08-JUN-17 09.59.08.426000000 AM, 10.42.8.9, mon_csr, /ecommunications_sve/start.swe, HTTP:Click, Click on input, Id, <N/A>, <N/A>, 0.0, 
-08-JUN-17 10.38.57.858000000 AM, 10.42.8.9, mohamoha, /ecommunications_sve/start.swe, HTTP:Click, Click on button, <none>, <N/A>, <N/A>, 0.0, OK
-08-JUN-17 11.26.33.330000000 AM, 10.42.8.9, mon_csr, /ecommunications_sve/start.swe, HTTP:Click, Click on input, T2_Primary_Attribute_Value, <N/A>, <N/A>, 0.0, 
-08-JUN-17 12.22.47.645000000 AM, 10.42.253.230, mon_csr, /ecommunications_sve/start.swe, HTTP:Request, InvokeMethod, <none>, POST, 200, 0.3806360470178499, <N/A>
-08-JUN-17 03.21.16.116000000 PM, 10.42.8.9, krisradh, /ecommunications_sve/start.swe, HTTP:Click, Click on input, s_0_1_9_0, <N/A>, <N/A>, 0.0, 
-08-JUN-17 09.07.16.067000000 AM, 10.42.8.9, <default>, <javascript>, HTTP:Click, Click on link, Name, <N/A>, <N/A>, 0.0, Inloggning
-08-JUN-17 08.16.39.624000000 AM, 10.42.8.9, mon_csr, /ecommunications_sve/start.swe, HTTP:Click, Click on link, ui-id-10, <N/A>, <N/A>, 0.0, Tj�nster
+08-JUN-17 12.36.44.871000000 AM,10.156.153.21,karitimo,/ecommunications_sve/start.swe,HTTP:Request,InvokeMethod,Contact Detail View,POST,200,2.297155844155844,<N/A>
+08-JUN-17 10.19.26.520000000 AM,10.42.8.9,mon_csr,/ecommunications_sve/start.swe,HTTP:Click,Click on link,ui-id-8,<N/A>,<N/A>,0.0,Tj�nster
+08-JUN-17 03.35.40.536000000 PM,10.42.8.9,krisradh,/ecommunications_sve/start.swe,HTTP:Click,Click on link,ui-id-11,<N/A>,<N/A>,0.0,Tj�nster
+08-JUN-17 12.35.41.368000000 AM,10.42.253.230,mon_csr,/ecommunications_sve/start.swe,HTTP:Request,InvokeMethod,All Account List View,POST,200,0.19065212981744442,<N/A>
+08-JUN-17 12.22.47.645000000 AM,10.42.253.230,mon_csr,/ecommunications_sve/start.swe,HTTP:Request,InvokeMethod,<none>,POST,200,0.28744684528954184,<N/A>
+08-JUN-17 10.38.57.858000000 AM,10.42.8.9,mohamoha,/ecommunications_sve/start.swe,HTTP:Click,Click on button,<none>,<N/A>,<N/A>,0.0,OK
+08-JUN-17 11.26.33.330000000 AM,10.42.8.9,mon_csr,/ecommunications_sve/start.swe,HTTP:Click,Click on input,Type,<N/A>,<N/A>,0.0,
+08-JUN-17 09.07.16.067000000 AM,10.42.8.9,<default>,<javascript>,HTTP:Click,Click on link,Name,<N/A>,<N/A>,0.0,Inloggning
+08-JUN-17 08.16.39.624000000 AM,10.42.8.9,mon_csr,/ecommunications_sve/start.swe,HTTP:Click,Click on link,ui-id-10,<N/A>,<N/A>,0.0,Tj�nster
+08-JUN-17 01.36.40.291000000 AM,10.42.8.9,mon_csr,/ecommunications_sve/start.swe,HTTP:Click,Click on input,Id,<N/A>,<N/A>,0.0,

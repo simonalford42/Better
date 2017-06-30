@@ -1,21 +1,12 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -38,6 +29,7 @@ public class Simpler {
 	public static DateParser dateParser;
 	public static int timeStampIndex;
 	public static int userIndex;
+	public static int numPoints;
 	
 	public static ArrayList<ArrayList<Seq>> finalClusters;
 	public static Seq[] finalMeans;
@@ -82,6 +74,7 @@ public class Simpler {
 		}
 	};
 	
+	
 	/**
 	 * @param dataFilePath -string to data file
 	 * @param keyFilePath - string to file turning points into pointtypes
@@ -89,8 +82,8 @@ public class Simpler {
 	 * @param attrTypes - 3 = timestamp, 4 = user, 0 = categorical, 1 = numerical, 2 = string matching  
 	 * @param dp - converts timestamp string into date
 	 */
-	public static void importReps(String filePath, double[] weights, int[] attrTypes, DateParser dp) {
-		System.out.println("Loading");
+	public static void importReps(String dataFilePath, String infoFilePath, double[] weights, int[] attrTypes, DateParser dp) {
+		System.out.println("Loading reps");
 		long time = System.currentTimeMillis();
 		
 		numAttrs = attrTypes.length;
@@ -124,10 +117,22 @@ public class Simpler {
 		}
 		
 		try {
-			CSVReader reader = new CSVReader(new FileReader(filePath));
-			pointTypes = reader.readAll().stream().skip(1).map(e -> new PointType(e)).toArray(size -> new PointType[size]);
-			System.out.println("halfway?");
+			List<String> infos = new ArrayList<>();
+			BufferedReader br = new BufferedReader(new FileReader(infoFilePath));
+			String line = "";
+			while(line != null) {
+				String info = "";
+				while((line = br.readLine()) != null && !line.equals("end info")) {
+					info += line + '\n';
+				}
+				infos.add(info);
+			}
+			br.close();
+			Iterator<String> iter = infos.iterator();
 			
+			CSVReader reader = new CSVReader(new FileReader(dataFilePath));
+			pointTypes = reader.readAll().stream().map(e -> new PointType(e, iter.next())).toArray(size -> new PointType[size]);
+			numPoints = pointTypes.length;
 			for(PointType pt: pointTypes) {
 				for(int numIndex: numIndeces) {
 					try {
@@ -154,9 +159,7 @@ public class Simpler {
 			rangeNumVals[numIndex] = largestNumVals[numIndex] - smallestNumVals[numIndex];
 		}
 		
-		long time2 = System.currentTimeMillis();
-		double secs = (double)(time2 - time) / 1000.0;
-		
+		distanceLookup = new double[numPoints][numPoints];
 		for(int i = 0; i < pointTypes.length; i++) {
 			for(int j = 0; j < pointTypes.length; j++) {
 				double dist = distance(pointTypes[i].data, pointTypes[j].data);
@@ -165,16 +168,27 @@ public class Simpler {
 			}
 		}
 		
+		long time2 = System.currentTimeMillis();
+		double secs = (double)(time2 - time) / 1000.0;
 		System.out.println("Loading done (" + secs + " seconds)");
 	}
 	
 	public static void importAll(String filePath) {
+		System.out.println("Loading all");
+		long time = System.currentTimeMillis();
+		
 		Map<String, ArrayList<PointType>> sacs = new HashMap<>();
 		
 		try {
 			CSVReader reader = new CSVReader(new FileReader(filePath));
-			
+			boolean first = true;
 			for(String[] attrList: reader) {
+				// skip the first item
+				if (first) {
+					first = false;
+					continue;
+				}
+				
 				PointType nearest = nearestRep(attrList);
 				String user = attrList[userIndex];
 				
@@ -188,9 +202,13 @@ public class Simpler {
 			sequences = sacs.values().stream().map(e -> new Seq(e)).collect(Collectors.toList());
 			reader.close();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		long time2 = System.currentTimeMillis();
+		double secs = (double)(time2 - time) / 1000.0;
+		System.out.println("Loading done (" + secs + " seconds)");
+
 	}
 	
 	public static PointType nearestRep(String[] attrList) {
@@ -207,31 +225,39 @@ public class Simpler {
 		
 		return nearest;
 	}
+	
+	public static double distance(String[] t1, String[] t2) {
+		return Subpoint.distance(t1, t2, Simpler.weights, Simpler.attrTypes);
+	}
 
-	public static double distance(String[] l1, String[] l2) {
+	public static double distance2(String[] l1, String[] l2) {
 		double dist = 0;
 		for(int i = 0; i < numAttrs; i++) {
 			if (weights[i] != 0) {
 				//attrTypes - 3 = timestamp, 4 = user, 0 = categorical, 1 = numerical, 2 = string matching
 				switch (attrTypes[i]) {
 				case 3:
-					break;
+					System.err.println("This weight should be zero " + i);
 					
 				case 4:
-					break;
+					System.err.println("This weight should be zero " + i);
 					
 				case 0:
-					if (l1[i].equals(l2[i])) {
+					if (!l1[i].equals(l2[i])) {
 						dist += weights[i];
 					}
 					break;
 					
 				case 1:
+					// Because FreshK sets rangeNumVals according to all of the points, 
+					// but simpler sets rangeNumVals only according to the rep points.
+					//so this could make the distances different = clusters different.
+					System.err.println("Should use numeric data for distances");
 					boolean b1 = l1[i].equals("<none>") || l1[i].equals("<N/A>");
 					boolean b2 = l2[i].equals("<none>") || l2[i].equals("<N/A>");
 
 					if (!b1 && !b2) {
-						dist += weights[i]*(1.0/FreshK.rangeNumVals[i])*Math.abs(Double.valueOf(l1[i]) - Double.valueOf(l2[i]));
+						dist += weights[i]*(1.0/rangeNumVals[i])*Math.abs(Double.valueOf(l1[i]) - Double.valueOf(l2[i]));
 					}
 					
 					break;
@@ -241,7 +267,7 @@ public class Simpler {
 					break;
 					
 				default:
-					throw new java.lang.RuntimeException("this not right");
+					System.err.println("Unknown attr type: " + attrTypes[i]);
 				}
 			}
 		}
@@ -373,40 +399,50 @@ public class Simpler {
 		s.close();
 	}
 	
-	public static void makeNewData(int k) {
-		double[] weights = {0, 		0, 		  0,  			1,  		1,	 	1, 		1, 		 1, 		1, 			1, 				0};
-		//		UXT_START_TIME	IPV4_ADDR	USERNAME	URL_PATH	CATEGORY	NAME	NAME2	UXT_METHOD	UXT_STATUS	UXT_DURATION	<N/A>'
-		// 0 is for categorical data, 1 is for numerical,
-		int[] dataTypes = {3,0,4, 0,0,0, 0,0,0, 1, 0};	
-		DateParser dp = new DateParser() {
-			public Date makeDate(String s) {
-				String apm = s.substring(s.length() - 3);
-				s = s.substring(0, s.length() - 9);
-				s = s + apm;
-				SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yy hh.mm.ss.SSS a");
-				Date d = null;
-				
-				try {
-					d = format.parse(s);
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				return d;
-			}
-		};
+	public static void makeJune28Data(int k, String fileName) {
+		Dataset june28 = Dataset.JUNE28;
+		double[] weights = june28.weights;
+		int[] attrTypes = june28.attrTypes;
+		DateParser dp = june28.dp;
 		
-		String filePath = "First_Small.csv";
-		String repFilePath = "K-means_" + k + "points.txt";
-		importReps(repFilePath, weights, dataTypes, dp);
+		String filePath = "/Users/alfordsimon/Desktop/Germain data/June 28/" + fileName;
+		String repFilePath = "/Users/alfordsimon/Desktop/Germain data/June K-means_" + k + "points_data.txt";
+		String infoFilePath = "/Users/alfordsimon/Desktop/Germain data/June K-means_" + k + "points_info.txt";
+		
+		importReps(repFilePath, infoFilePath, weights, attrTypes, dp);
+		importAll(filePath);
+	}
+	
+	public static void exportSeqs(String fileName) {
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));
+			for(Seq s: sequences) {
+				bw.write(s.toString() + "\n");
+			}
+			bw.close();
+			System.out.println("Exported " + fileName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void makeFirstData(int k, String fileName) {
+		Dataset first = Dataset.FIRST;
+		double[] weights = first.weights;
+		int[] attrTypes = first.attrTypes;
+		DateParser dp = first.dp;
+		
+		String filePath = "/Users/alfordsimon/Desktop/Germain Data/First/" + fileName;
+		String repFilePath = "K-means_" + k + "points_data.txt";
+		String infoFilePath = "K-means_" + k + "points_info.txt";
+		
+		importReps(repFilePath, infoFilePath, weights, attrTypes, dp);
 		importAll(filePath);
 	}
 	
 	public static void main(String[] args) {
-		makeNewData(10);
-		List<String> data = sequences.stream().map(e -> e.data.stream().map(f -> f.label).collect(Collectors.joining(""))).collect(Collectors.toList());
-		String[] common = PatternFinder.findMostCommon(data, 5, 15);
-		Arrays.stream(common).forEach(System.out::println);
+		int k = 58;
+		makeJune28Data(k,"simon-20170620.1.csv");
+		exportSeqs("/Users/alfordsimon/Desktop/Germain Data/seqed" + k + "-June20.1.txt");
 	}
 }
