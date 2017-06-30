@@ -1,5 +1,0 @@
-08-JUN-17 12.33.11.325000000 PM,10.42.8.9,niklhoglu,/ecommunications_sve/start.swe,HTTP:Click,Click on link,ui-id-79,<N/A>,<N/A>,0.0,Tj�nster
-08-JUN-17 12.22.47.645000000 AM,10.42.253.230,mon_csr,/ecommunications_sve/start.swe,HTTP:Request,InvokeMethod,<none>,POST,200,0.3806360470178499,<N/A>
-08-JUN-17 09.07.16.067000000 AM,10.42.8.9,<default>,<javascript>,HTTP:Click,Click on link,Name,<N/A>,<N/A>,0.0,Inloggning
-08-JUN-17 10.19.26.520000000 AM,10.42.8.9,mon_csr,/ecommunications_sve/start.swe,HTTP:Click,Click on link,ui-id-8,<N/A>,<N/A>,0.0,Tj�nster
-08-JUN-17 11.26.33.330000000 AM,10.42.8.9,mon_csr,/ecommunications_sve/start.swe,HTTP:Click,Click on input,Id,<N/A>,<N/A>,0.0,
