@@ -1,16 +1,18 @@
 import java.util.List;
 
 public class Seq {
-	List<PointType> data;
-	int length;
+	public List<PointType> data;
+	public int length;
+	public String user;
 	
-	public Seq(List<PointType> data) {
+	public Seq(List<PointType> data, String user) {
 		this.data = data;
 		this.length = data.size();
+		this.user = user;
 	}
 	
 	public String toString() {
-		String s = "";
+		String s = user + " ";
 		for(PointType i: data) {
 			s += i.label;
 		}

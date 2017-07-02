@@ -1,22 +1,29 @@
 import java.util.Arrays;
 
 public class PointType {
-	public final int id;
-	public static int idCounter = 0;
-	public final String label;
-	public final String[] data; //has all the data for ease of use
-	public final String info;
+	public int id;
+	private static int idCounter = 0;
+	public String[] attrs;
+	public String label;
+	public String info;
 	
-	public PointType(String[] data, String info) {
-		this.data = data;
+	public PointType(String[] attrs) {
+		this.attrs= attrs;
 		this.id = idCounter;
 		idCounter++;
+	}
+	
+	public PointType(String[] attrs, String info) {
+		this.id = idCounter;
+		idCounter++;
+
+		this.attrs = attrs;
 		this.label = info.substring(0, 1);
 		this.info = info;
 	}
 	
 	public String toString() {
-		return Arrays.toString(data);
+		return Arrays.toString(attrs);
 	}
 
 	@Override
@@ -40,6 +47,5 @@ public class PointType {
 			return false;
 		return true;
 	}
-	
 	
 }

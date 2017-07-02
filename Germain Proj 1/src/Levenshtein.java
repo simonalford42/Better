@@ -36,7 +36,7 @@ public class Levenshtein {
 
 		for(int i = 2; i < root.length + 2; i++) {
 			for(int j = 2; j < query.length + 2; j++) {
-				double diff = query.data.get(j-2).distance(root.data.get(i-2));
+				double diff = FreshK.distance(query.points.get(j-2), (root.points.get(i-2)));
 				arr[i][j] = min((arr[i-1][j] + shiftPenalty), (arr[i][j-1] + shiftPenalty), (arr[i-1][j-1] + diff));
 			}
 		}
@@ -83,7 +83,7 @@ public class Levenshtein {
 		for(int i = 2; i < root.length + 2; i++) {
 			for(int j = 2; j < query.length + 2; j++) {
 				int diff = 0;
-				if(query.data.get(j-2).distance(root.data.get(i-2)) == 0)
+				if(FreshK.distance(query.points.get(j-2), root.points.get(i-2)) == 0)
 					diff = 1;
 				arr[i][j] = (int)min((arr[i-1][j] + shiftPenalty), (arr[i][j-1] + shiftPenalty), (arr[i-1][j-1] + diff));
 			}

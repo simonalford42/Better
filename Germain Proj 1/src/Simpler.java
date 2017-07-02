@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,20 +22,12 @@ public class Simpler {
 	public static double[][] distanceLookup;
 	public static PointType[] pointTypes;
 	
-	public static int[] attrTypes;
-	public static double[] weights;
+	public static DatasetFormat format;
 	public static double[] rangeNumVals;
-	public static int numAttrs;
-	public static double maxDist;
-	public static DateParser dateParser;
-	public static int timeStampIndex;
-	public static int userIndex;
 	public static int numPoints;
 	
-	public static ArrayList<ArrayList<Seq>> finalClusters;
+	public static List<List<Seq>> finalClusters;
 	public static Seq[] finalMeans;
-	public static ArrayList<ArrayList<PointType>> finalSubClusters;
-	public static Integer[] finalSubMeans;
 	
 	public static DistanceMetric<Seq> defaultDist = new DistanceMetric<Seq>() {
 		public double distance(Seq s1, Seq s2) {
@@ -54,7 +47,7 @@ public class Simpler {
 				distance += subdist;
 			}
 			
-			double sizePenalty = (maxSize - minSize)*Simpler.maxDist;
+			double sizePenalty = (maxSize - minSize)*Simpler.format.maxDist;
 			distance += sizePenalty;
 			distance /= (double)maxSize;
 			
@@ -70,7 +63,7 @@ public class Simpler {
 	
 	public static DistanceMetric<Seq> softLevDist = new DistanceMetric<Seq>() {
 		public double distance(Seq s1, Seq s2) {
-			return Levenshtein.softLevi(s1, s2, maxDist);
+			return Levenshtein.softLevi(s1, s2, Simpler.format.maxDist);
 		}
 	};
 	
@@ -82,37 +75,26 @@ public class Simpler {
 	 * @param attrTypes - 3 = timestamp, 4 = user, 0 = categorical, 1 = numerical, 2 = string matching  
 	 * @param dp - converts timestamp string into date
 	 */
-	public static void importReps(String dataFilePath, String infoFilePath, double[] weights, int[] attrTypes, DateParser dp) {
+	public static void importReps(String dataFilePath, String infoFilePath, DatasetFormat format) {
 		System.out.println("Loading reps");
 		long time = System.currentTimeMillis();
 		
-		numAttrs = attrTypes.length;
-		dateParser = dp;
-		
-		Simpler.weights = weights;
-		maxDist = Arrays.stream(weights).sum();
-		Simpler.attrTypes = attrTypes;
-
-		rangeNumVals = new double[numAttrs];
-		double[] largestNumVals = new double[numAttrs];
-		double[] smallestNumVals = new double[numAttrs];
+		Simpler.format = format;
+		rangeNumVals = new double[format.numAttrs];
+		double[] largestNumVals = new double[format.numAttrs];
+		double[] smallestNumVals = new double[format.numAttrs];
 		
 		
-		for(int i = 0; i < numAttrs; i++) {
+		for(int i = 0; i < format.numAttrs; i++) {
 			largestNumVals[i] = Double.MIN_VALUE;
 			smallestNumVals[i] = Double.MAX_VALUE;
 		}
 		
-		userIndex = -1;
 		ArrayList<Integer> numIndeces = new ArrayList<>();
-		for(int i = 0; i < numAttrs; i++) {
-			int type = attrTypes[i];
-			if (type == 1) {
+		for(int i = 0; i < format.numAttrs; i++) {
+			int type = format.attrTypes[i];
+			if (type == DatasetFormat.NUM_ATTR) {
 				numIndeces.add(i);
-			} else if (type == 3) {
-				timeStampIndex = i;
-			} else if (type == 4) {
-				userIndex = i;
 			}
 		}
 		
@@ -128,15 +110,34 @@ public class Simpler {
 				infos.add(info);
 			}
 			br.close();
-			Iterator<String> iter = infos.iterator();
 			
+			pointTypes = new PointType[infos.size()];
 			CSVReader reader = new CSVReader(new FileReader(dataFilePath));
-			pointTypes = reader.readAll().stream().map(e -> new PointType(e, iter.next())).toArray(size -> new PointType[size]);
-			numPoints = pointTypes.length;
-			for(PointType pt: pointTypes) {
+			boolean first = true;
+			int pointIndex = 0;
+			for(String[] data: reader) {
+				// skip the first item
+				if (first) {
+					first = false;
+					continue;
+				}
+				
+				String[] attrs = new String[data.length -2];
+				int j = 0;
+				for (int i = 0; i < data.length; i++) {
+					if (i != format.timestampIndex && i != format.userIndex) {
+						attrs[j] = data[i];
+						j++;
+					}
+				}
+				
+				PointType pt = new PointType(attrs, infos.get(pointIndex));
+				pointTypes[pointIndex] = pt;
+				pointIndex++;
+				
 				for(int numIndex: numIndeces) {
 					try {
-						double d = Double.valueOf(pt.data[numIndex]);
+						double d = Double.valueOf(pt.attrs[numIndex]);
 						if (d > largestNumVals[numIndex]) {
 							largestNumVals[numIndex] = d;
 						} else if (d < smallestNumVals[numIndex]) {
@@ -145,11 +146,13 @@ public class Simpler {
 					} catch (NumberFormatException e) {
 						//this is okay, it just means we got an N/A and don't count it
 					} catch (ArrayIndexOutOfBoundsException e) {
-						System.out.println(Arrays.toString(pt.data));
+						System.out.println(Arrays.toString(pt.attrs));
 						e.printStackTrace();
 					}
 				}
 			}
+			
+			numPoints = pointTypes.length;
 			reader.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -162,7 +165,7 @@ public class Simpler {
 		distanceLookup = new double[numPoints][numPoints];
 		for(int i = 0; i < pointTypes.length; i++) {
 			for(int j = 0; j < pointTypes.length; j++) {
-				double dist = distance(pointTypes[i].data, pointTypes[j].data);
+				double dist = distance(pointTypes[i].attrs, pointTypes[j].attrs);
 				distanceLookup[i][j] = dist;
 				distanceLookup[j][i] = dist;
 			}
@@ -177,20 +180,33 @@ public class Simpler {
 		System.out.println("Loading all");
 		long time = System.currentTimeMillis();
 		
-		Map<String, ArrayList<PointType>> sacs = new HashMap<>();
+		Map<String, List<PointType>> sacs = new HashMap<>();
 		
 		try {
 			CSVReader reader = new CSVReader(new FileReader(filePath));
 			boolean first = true;
-			for(String[] attrList: reader) {
+			for(String[] data: reader) {
 				// skip the first item
 				if (first) {
 					first = false;
 					continue;
 				}
 				
-				PointType nearest = nearestRep(attrList);
-				String user = attrList[userIndex];
+				String[] attrs = new String[data.length -2];
+				String user = "";
+				int j = 0;
+				for (int i = 0; i < data.length; i++) {
+					if (format.attrTypes[i] == format.userIndex) {
+						user = data[i];
+					} else if (format.attrTypes[i] == format.timestampIndex) {
+						
+					} else {
+						attrs[j] = data[i];
+						j++;
+					}
+				}
+				
+				PointType nearest = nearestRep(attrs);
 				
 				if (!sacs.containsKey(user)) {
 					sacs.put(user, new ArrayList<>());
@@ -199,7 +215,7 @@ public class Simpler {
 				sacs.get(user).add(nearest);
 			}
 			
-			sequences = sacs.values().stream().map(e -> new Seq(e)).collect(Collectors.toList());
+			sequences = sacs.entrySet().stream().map(e -> new Seq(e.getValue(), e.getKey())).collect(Collectors.toList());
 			reader.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -216,7 +232,7 @@ public class Simpler {
 		double minDist = Double.MAX_VALUE;
 		
 		for(PointType pt: pointTypes) {
-			double dist = distance(attrList, pt.data);
+			double dist = distance(attrList, pt.attrs);
 			if (dist < minDist) {
 				minDist = dist;
 				nearest = pt;
@@ -226,16 +242,12 @@ public class Simpler {
 		return nearest;
 	}
 	
-	public static double distance(String[] t1, String[] t2) {
-		return Subpoint.distance(t1, t2, Simpler.weights, Simpler.attrTypes);
-	}
-
-	public static double distance2(String[] l1, String[] l2) {
+	public static double distance(String[] l1, String[] l2) {
 		double dist = 0;
-		for(int i = 0; i < numAttrs; i++) {
-			if (weights[i] != 0) {
+		for(int i = 0; i < format.numAttrs; i++) {
+			if (format.weights[i] != 0) {
 				//attrTypes - 3 = timestamp, 4 = user, 0 = categorical, 1 = numerical, 2 = string matching
-				switch (attrTypes[i]) {
+				switch (format.attrTypes[i]) {
 				case 3:
 					System.err.println("This weight should be zero " + i);
 					
@@ -244,7 +256,7 @@ public class Simpler {
 					
 				case 0:
 					if (!l1[i].equals(l2[i])) {
-						dist += weights[i];
+						dist += format.weights[i];
 					}
 					break;
 					
@@ -257,17 +269,17 @@ public class Simpler {
 					boolean b2 = l2[i].equals("<none>") || l2[i].equals("<N/A>");
 
 					if (!b1 && !b2) {
-						dist += weights[i]*(1.0/rangeNumVals[i])*Math.abs(Double.valueOf(l1[i]) - Double.valueOf(l2[i]));
+						dist += format.weights[i]*(1.0/rangeNumVals[i])*Math.abs(Double.valueOf(l1[i]) - Double.valueOf(l2[i]));
 					}
 					
 					break;
 					
 				case 2:
-					dist += weights[i]*stringDist(l1[i], l2[i]); 
+					dist += format.weights[i]*stringDist(l1[i], l2[i]); 
 					break;
 					
 				default:
-					System.err.println("Unknown attr type: " + attrTypes[i]);
+					System.err.println("Unknown attr type: " + format.attrTypes[i]);
 				}
 			}
 		}
@@ -313,8 +325,8 @@ public class Simpler {
 		System.out.println("K-medoids");
 		//initialize the k means to random FreshSeqs
 		Seq[] means = initMeans(k);
-		ArrayList<ArrayList<Seq>> clusters = null;
-		ArrayList<ArrayList<Seq>> oldClusters;
+		List<List<Seq>> clusters = null;
+		List<List<Seq>> oldClusters;
 		
 		do { //repeat until convergence
 			//System.out.println("New round");
@@ -326,7 +338,7 @@ public class Simpler {
 			Seq[] newMeans = new Seq[k];
 			for(int i = 0; i < k; i++) {
 			//	System.out.println("k" + (i+1));
-				ArrayList<Seq> cluster = clusters.get(i);
+				List<Seq> cluster = clusters.get(i);
 		//		System.out.println("cluster = " + cluster.size());
 				
 				newMeans[i] = medoid(cluster, dm);
@@ -342,9 +354,9 @@ public class Simpler {
 		return means;
 	}
 	
-	private static ArrayList<ArrayList<Seq>> cluster(Seq[] means, DistanceMetric<Seq> dm) {
+	private static List<List<Seq>> cluster(Seq[] means, DistanceMetric<Seq> dm) {
 		int k = means.length;
-		ArrayList<ArrayList<Seq>> clusters = new ArrayList<ArrayList<Seq>>(k);
+		List<List<Seq>> clusters = new ArrayList<>(k);
 		for (int i = 0; i < k; i++) {
 			clusters.add(new ArrayList<Seq>());
 		}
@@ -368,7 +380,7 @@ public class Simpler {
 		return clusters;
 	}
 	
-	private static Seq medoid(ArrayList<Seq> cluster, DistanceMetric<Seq> dm) {
+	private static Seq medoid(List<Seq> cluster, DistanceMetric<Seq> dm) {
 		double[] totalDistances = new double[cluster.size()];
 		double minDist = Integer.MAX_VALUE;
 		Seq min = cluster.get(0);
@@ -400,16 +412,11 @@ public class Simpler {
 	}
 	
 	public static void makeJune28Data(int k, String fileName) {
-		Dataset june28 = Dataset.JUNE28;
-		double[] weights = june28.weights;
-		int[] attrTypes = june28.attrTypes;
-		DateParser dp = june28.dp;
-		
 		String filePath = "/Users/alfordsimon/Desktop/Germain data/June 28/" + fileName;
 		String repFilePath = "/Users/alfordsimon/Desktop/Germain data/June K-means_" + k + "points_data.txt";
 		String infoFilePath = "/Users/alfordsimon/Desktop/Germain data/June K-means_" + k + "points_info.txt";
 		
-		importReps(repFilePath, infoFilePath, weights, attrTypes, dp);
+		importReps(repFilePath, infoFilePath, DatasetFormat.JUNE28);
 		importAll(filePath);
 	}
 	
@@ -427,16 +434,11 @@ public class Simpler {
 	}
 	
 	public static void makeFirstData(int k, String fileName) {
-		Dataset first = Dataset.FIRST;
-		double[] weights = first.weights;
-		int[] attrTypes = first.attrTypes;
-		DateParser dp = first.dp;
-		
 		String filePath = "/Users/alfordsimon/Desktop/Germain Data/First/" + fileName;
 		String repFilePath = "K-means_" + k + "points_data.txt";
 		String infoFilePath = "K-means_" + k + "points_info.txt";
 		
-		importReps(repFilePath, infoFilePath, weights, attrTypes, dp);
+		importReps(repFilePath, infoFilePath, DatasetFormat.FIRST);
 		importAll(filePath);
 	}
 	
